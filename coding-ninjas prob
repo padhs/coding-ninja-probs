@@ -1,0 +1,116 @@
+Ayush's latest homework assignment is writing an essay. However, he finds writing essays so boring that, after working for two hours, he realized that all he has written are N long words consisting entirely of letters A and B. Having accepted that he will never finish the essay in time, poor Ayush has decided to at least have some fun with it by counting nice words.
+Ayush is connecting pairs of identical letters (A with A, B with B) by drawing arches above the word. A given word is nice if each letter can be connected to exactly one other letter in such a way that no two arches intersect. Help Ayush count how many words are nice.
+Input Format:
+The first line of input contains the positive integer N, the number of words written down by Ayush.
+Each of the following N lines contains a single word consisting of letters A and B.
+The sum of lengths of all words doesn't exceed 1 000 000.
+Constraints:
+1 ≤ N ≤ 100
+2 ≤ |B| ≤ 100000
+Time limit: 1 sec
+Output Format:
+The first and only line of output must contain the number of nice words.
+Sample Input 1:
+3
+ABAB
+AABB
+ABBA
+Sample Output 2:
+2
+Sample Input 1:
+3
+AAA
+AA
+AB
+Sample Output 2:
+1
+
+Answer --->
+
+
+#include <iostream>
+using std::cin;
+using std::endl;
+
+struct stack{
+    int size;
+    int top;
+    char *s;
+};
+
+void push(stack *st, char x) {
+    st->top++;
+    st->s[st->top] = x;
+}
+
+char pop(stack *st){
+    //no need to check for empty stack as we will use pop only after using push.
+    char x = st->s[st->top];
+    st->top--;
+    return x;
+}
+
+int isEmpty(stack *st){
+    if (st->top == -1){
+        return 1;
+    } else{
+        return 0;
+    }
+}
+
+int strLength(const char n[]){
+    int i;
+    for (i = 0; n[i] != '\0'; i++) {
+    }
+    return i;
+}
+
+//initialization -->
+struct stack stk1; // for A
+struct stack stk2; // for B
+
+int isBalanced(char *exp){
+
+    stk1.size = strLength(exp);
+    stk1.top = -1;
+    stk1.s = new char[stk1.size];
+    int flagA = 0;
+
+    stk2.size = stk1.size;
+    stk2.top = -1;
+    stk2.s = new char[stk2.size];
+    int flagB = 0;
+
+    for (int i = 0; exp[i] != '\0'; i++) {
+        if(exp[i] == 'A'){
+            if(flagA == 0){
+                push(&stk1, exp[i]);
+                flagA = 1;
+            }else{
+                pop(&stk1);
+                flagA = 0;
+            }
+        }else if(exp[i] == 'B'){
+            if (flagB == 0){
+                push(&stk2, exp[i]);
+                flagB = 1;
+            }else{
+                pop(&stk2);
+                flagB = 0;
+            }
+        }
+    }
+    return (isEmpty(&stk1) && isEmpty(&stk2)) ? 1 : 0;
+}
+
+int main(){
+    int n;
+    int tempCount = 0;
+    char inpExp[100];
+    cin>>n;
+    for (int i = 0; i < n; i++) {
+        cin>>inpExp;
+        tempCount += isBalanced(inpExp);
+    }
+    printf("%d", tempCount);
+}
